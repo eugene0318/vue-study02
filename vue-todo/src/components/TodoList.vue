@@ -2,7 +2,7 @@
   <div>
     <transition-group name="list" tag="ul">
       <li
-        v-for="(todoItem, index) in this.$store.todoItems"
+        v-for="(todoItem, index) in this.$store.getters.storedTodoItems"
         v-bind:key="todoItem.item"
         class="shadow"
       >
@@ -14,7 +14,7 @@
         <span v-bind:class="{ textCompleted: todoItem.completed }">{{
           todoItem.item
         }}</span>
-        <span class="removeBtn" v-on:click="removeTodo(todoItem, index)">
+        <span class="removeBtn" v-on:click="removeTodo({ todoItem, index })">
           <i class="fas fa-trash-alt"></i
         ></span>
       </li>
@@ -23,23 +23,35 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
   //props: ["propsdata"],
   methods: {
-    removeTodo: function (todoItem, index) {
-      //this.$emit("removeItem", todoItem, index);
-      this.$store.commit("removeItem", todoItem, index);
-      // const obj = {
-      //   todoItem,
-      //   index
-      // },
-      this.$store.commit("removeOneItem", { todoItem, index });
-    },
+    ...mapMutations({
+      removeTodo: "removeOneItem",
+      toggleComplete: "toggleOneItem",
+    }),
+
+    // removeTodo: function (todoItem, index) {
+    //   //this.$emit("removeItem", todoItem, index);
+    //   this.$store.commit("removeItem", todoItem, index);
+    //   // const obj = {
+    //   //   todoItem,
+    //   //   index
+    //   // },
+    //   this.$store.commit("removeOneItem", { todoItem, index });
+    // },
     //eslint-disable-next-line no-unused-vars
-    toggleComplete: function (todoItem, index) {
-      //this.$emit("toggleItem", todoItem, index);
-      this.$store.commit("toggleOneItem", { todoItem, index });
-    },
+    // toggleComplete: function (todoItem, index) {
+    //   //this.$emit("toggleItem", todoItem, index);
+    //   this.$store.commit("toggleOneItem", { todoItem, index });
+    // },
+  },
+  computed: {
+    ...mapGetters("storedTodoItems"),
+    // todoItems() {
+    //   return this.$store.getters.storedTodoItems;
+    // },
   },
 };
 </script>
